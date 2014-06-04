@@ -80,6 +80,7 @@ class TableFilesReader {
 
 			insert = "insert into " + tableName + " values (?,?)";
 			lineNumber = 0;
+			insertOK = 0;
 			try {
 				while ((line = reader.readLine()) != null) {
 					lineNumber++;
@@ -157,10 +158,13 @@ class TableFilesReader {
 
 	private void printCountLines() {
 		Set<Entry<String, Integer[]>> entries = linesCount.entrySet();
+		boolean hasProblem = false;
 		for (Entry<String, Integer[]> entry : entries) {
+			hasProblem = !entry.getValue()[0].equals(entry.getValue()[1]);
 			System.out.println("File " + entry.getKey() + " imported "
 					+ entry.getValue()[0] + " from " + entry.getValue()[1]
-					+ " line(s)");
+					+ " line(s) "
+					+ (hasProblem ? "-----> VERIFY CONTENT FILE" : ""));
 		}
 	}
 
@@ -171,7 +175,6 @@ class TableFilesReader {
 		try {
 			ps = connection.prepareStatement(dropTable.toString());
 			ps.execute();
-			System.out.println("Droped table " + tableName);
 		} catch (SQLException e) {
 			System.out.println("WARNING on drop table " + tableName
 					+ ". Message: " + e.getMessage());
@@ -189,7 +192,6 @@ class TableFilesReader {
 		try {
 			ps = connection.prepareStatement(createTable.toString());
 			ps.execute();
-			System.out.println("Table created " + tableName);
 		} catch (SQLException e) {
 			System.out.println("WARNING on creating table " + tableName
 					+ ". Message: " + e.getMessage());
