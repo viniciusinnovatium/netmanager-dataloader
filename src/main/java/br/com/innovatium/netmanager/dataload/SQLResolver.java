@@ -11,6 +11,8 @@ final class SQLResolver {
 			initPostgreSQL();
 		} else if (ResolverType.ORACLE.equals(type)) {
 			initOracleSQL();
+		} else if (ResolverType.MYSQL.equals(type)) {
+			initPostgreMySQL();
 		} else {
 			throw new IllegalArgumentException(
 					"This database instruction was not implemented.");
@@ -18,6 +20,13 @@ final class SQLResolver {
 	}
 
 	private void initPostgreSQL() {
+		sql = new HashMap<SQLType, String>();
+		sql.put(SQLType.STRING, "varchar(4000)");
+		sql.put(SQLType.DROP_TABLE, "drop table");
+		sql.put(SQLType.CREATE_TABLE, "create table");
+	}
+
+	private void initPostgreMySQL() {
 		sql = new HashMap<SQLType, String>();
 		sql.put(SQLType.STRING, "varchar(4000)");
 		sql.put(SQLType.DROP_TABLE, "drop table");
