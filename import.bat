@@ -1,1 +1,1 @@
-java -jar data-import.jar
+java -jar netmanager-dataloader.jar
