@@ -64,6 +64,8 @@ class TableFilesReader {
 		String[] keyValue = null;
 		int lineNumber = 0;
 		int insertOK = 0;
+
+		// Read all files to be loaded.
 		for (File file : files) {
 			try {
 				reader = new BufferedReader(new FileReader(file));
@@ -151,9 +153,21 @@ class TableFilesReader {
 		System.out.println("----------- Report ----------");
 		System.out.println("-----------------------------");
 		System.out.println("Time expended to import: "
-				+ (end.getTime() - begin.getTime()) / 1000 + "(s)");
+				+ formatTimeExpended(begin, end));
 		printCountLines();
 		System.out.println("-----------------------------");
+	}
+
+	private String formatTimeExpended(Date begin, Date end) {
+		long time= (end.getTime() - begin.getTime())/1000L;
+		int hours = (int) (time / 3600);
+		int minutes = (int) ((time % 3600) / 60);
+		int seconds = (int) ((time % 3600) % 60);
+		return formatTime(hours)+":"+formatTime(minutes)+":"+formatTime(seconds);
+	}
+	
+	private static String formatTime(int value){
+		return value <= 9 ? "0"+value : String.valueOf(value);
 	}
 
 	private void printCountLines() {
@@ -185,8 +199,11 @@ class TableFilesReader {
 		final String dataType = resolver.resolve(SQLType.STRING);
 
 		StringBuilder createTable = new StringBuilder();
-		createTable.append(resolver.resolve(SQLType.CREATE_TABLE)).append(" ")
-				.append(tbschema).append(".").append(tableName);
+		createTable.append(resolver.resolve(SQLType.CREATE_TABLE));
+		createTable.append(" ");
+		createTable.append(tbschema);
+		createTable.append(".");
+		createTable.append(tableName);
 		createTable.append("( key_ ").append(dataType).append(" not null ");
 		createTable.append(", value_ ").append(dataType).append(" ) ");
 		try {
@@ -268,13 +285,13 @@ class TableFilesReader {
 	}
 
 	private void configSQLResolver() {
-		ResolverType type = null;
+		SQLResolverType type = null;
 		if (dburl.contains("postgre")) {
-			type = ResolverType.POSTGRE;
+			type = SQLResolverType.POSTGRE;
 		} else if (dburl.contains("oracle")) {
-			type = ResolverType.ORACLE;
+			type = SQLResolverType.ORACLE;
 		} else if (dburl.contains("mysql")) {
-			type = ResolverType.MYSQL;
+			type = SQLResolverType.MYSQL;
 		}
 		resolver = SQLResolver.getResolver(type);
 	}

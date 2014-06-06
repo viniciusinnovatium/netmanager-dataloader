@@ -6,13 +6,13 @@ import java.util.Map;
 final class SQLResolver {
 	private Map<SQLType, String> sql = new HashMap<SQLType, String>();
 
-	private SQLResolver(ResolverType type) {
-		if (ResolverType.POSTGRE.equals(type)) {
+	private SQLResolver(SQLResolverType type) {
+		if (SQLResolverType.POSTGRE.equals(type)) {
 			initPostgreSQL();
-		} else if (ResolverType.ORACLE.equals(type)) {
+		} else if (SQLResolverType.ORACLE.equals(type)) {
 			initOracleSQL();
-		} else if (ResolverType.MYSQL.equals(type)) {
-			initPostgreMySQL();
+		} else if (SQLResolverType.MYSQL.equals(type)) {
+			initMySQL();
 		} else {
 			throw new IllegalArgumentException(
 					"This database instruction was not implemented.");
@@ -21,12 +21,12 @@ final class SQLResolver {
 
 	private void initPostgreSQL() {
 		sql = new HashMap<SQLType, String>();
-		sql.put(SQLType.STRING, "varchar(4000)");
+		sql.put(SQLType.STRING, "varchar");
 		sql.put(SQLType.DROP_TABLE, "drop table");
 		sql.put(SQLType.CREATE_TABLE, "create table");
 	}
 
-	private void initPostgreMySQL() {
+	private void initMySQL() {
 		sql = new HashMap<SQLType, String>();
 		sql.put(SQLType.STRING, "varchar(4000)");
 		sql.put(SQLType.DROP_TABLE, "drop table");
@@ -40,10 +40,10 @@ final class SQLResolver {
 		sql.put(SQLType.CREATE_TABLE, "create table");
 	}
 
-	public static SQLResolver getResolver(ResolverType type) {
+	public static SQLResolver getResolver(SQLResolverType type) {
 		return new SQLResolver(type);
 	}
-
+	
 	public String resolve(SQLType type) {
 		return sql.get(type);
 	}

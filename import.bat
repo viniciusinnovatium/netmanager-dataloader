@@ -1,1 +1,1 @@
-java -jar netmanager-dataloader.jar
+java -jar netmanager-dataloader.jar > dataloarder.log

@@ -1,5 +1,5 @@
 package br.com.innovatium.netmanager.dataload;
 
-public enum ResolverType {
+public enum SQLResolverType {
 	POSTGRE, MYSQL, ORACLE
 }
