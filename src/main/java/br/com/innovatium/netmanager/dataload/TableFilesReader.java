@@ -103,7 +103,6 @@ class TableFilesReader {
 							ps.setString(2, keyValue[1]);
 						}
 						ps.execute();
-						connection.commit();
 						insertOK++;
 					} catch (SQLException e) {
 						System.out.println("WARNING on processing line "
@@ -190,7 +189,6 @@ class TableFilesReader {
 		try {
 			ps = connection.prepareStatement(dropTable.toString());
 			ps.execute();
-			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("WARNING on drop table " + tableName
 					+ ". Message: " + e.getMessage());
@@ -211,7 +209,6 @@ class TableFilesReader {
 		try {
 			ps = connection.prepareStatement(createTable.toString());
 			ps.execute();
-			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("WARNING on creating table " + tableName
 					+ ". Message: " + e.getMessage());
@@ -247,7 +244,6 @@ class TableFilesReader {
 				throw e;
 			}
 			connection = DriverManager.getConnection(dburl, dbuser, dbpassword);
-			connection.setAutoCommit(false);
 			return connection;
 		} catch (SQLException e) {
 			System.err.println("Fail to open database connection. Message: "
