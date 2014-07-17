@@ -24,6 +24,7 @@ final class SQLResolver {
 		sql.put(SQLType.STRING, "varchar");
 		sql.put(SQLType.DROP_TABLE, "drop table");
 		sql.put(SQLType.CREATE_TABLE, "create table");
+		sql.put(SQLType.LONG_STRING, "varchar");
 	}
 
 	private void initMySQL() {
@@ -31,6 +32,7 @@ final class SQLResolver {
 		sql.put(SQLType.STRING, "varchar(4000)");
 		sql.put(SQLType.DROP_TABLE, "drop table");
 		sql.put(SQLType.CREATE_TABLE, "create table");
+		sql.put(SQLType.LONG_STRING, "TEXT");
 	}
 
 	private void initOracleSQL() {
@@ -38,6 +40,7 @@ final class SQLResolver {
 		sql.put(SQLType.STRING, "varchar2(4000)");
 		sql.put(SQLType.DROP_TABLE, "drop table");
 		sql.put(SQLType.CREATE_TABLE, "create table");
+		sql.put(SQLType.LONG_STRING, "CLOB");
 	}
 
 	public static SQLResolver getResolver(SQLResolverType type) {

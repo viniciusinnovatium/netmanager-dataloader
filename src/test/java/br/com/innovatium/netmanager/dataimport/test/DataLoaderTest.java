@@ -18,5 +18,4 @@ public class DataLoaderTest {
 			assertFalse("Fail on reading table files", true);
 		}
 	}
-
 }

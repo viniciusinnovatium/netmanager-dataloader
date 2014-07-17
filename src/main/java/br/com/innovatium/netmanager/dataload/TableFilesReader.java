@@ -26,6 +26,7 @@ class TableFilesReader {
 	private String tbschema;
 	private String driver;
 	private File directory;
+	private boolean droptable;
 	private SQLResolver resolver;
 	private Map<String, Integer[]> linesCount = new HashMap<String, Integer[]>();
 
@@ -77,7 +78,10 @@ class TableFilesReader {
 			System.out.println("Reading file: " + file.getName());
 
 			tableName = generateTableName(file);
-			dropTable(tableName);
+			if (droptable) {
+				dropTable(tableName);
+			}
+
 			createTable(tableName);
 
 			insert = "insert into " + tableName + " values (?,?)";
@@ -159,15 +163,16 @@ class TableFilesReader {
 	}
 
 	private String formatTimeExpended(Date begin, Date end) {
-		long time= (end.getTime() - begin.getTime())/1000L;
+		long time = (end.getTime() - begin.getTime()) / 1000L;
 		int hours = (int) (time / 3600);
 		int minutes = (int) ((time % 3600) / 60);
 		int seconds = (int) ((time % 3600) % 60);
-		return formatTime(hours)+":"+formatTime(minutes)+":"+formatTime(seconds);
+		return formatTime(hours) + ":" + formatTime(minutes) + ":"
+				+ formatTime(seconds);
 	}
-	
-	private static String formatTime(int value){
-		return value <= 9 ? "0"+value : String.valueOf(value);
+
+	private static String formatTime(int value) {
+		return value <= 9 ? "0" + value : String.valueOf(value);
 	}
 
 	private void printCountLines() {
@@ -183,6 +188,7 @@ class TableFilesReader {
 	}
 
 	private void dropTable(String tableName) {
+
 		StringBuilder dropTable = new StringBuilder();
 		dropTable.append(resolver.resolve(SQLType.DROP_TABLE)).append(" ")
 				.append(tbschema).append(".").append(tableName);
@@ -196,7 +202,8 @@ class TableFilesReader {
 	}
 
 	private void createTable(String tableName) {
-		final String dataType = resolver.resolve(SQLType.STRING);
+		final String stringType = resolver.resolve(SQLType.STRING);
+		final String longStringType = resolver.resolve(SQLType.LONG_STRING);
 
 		StringBuilder createTable = new StringBuilder();
 		createTable.append(resolver.resolve(SQLType.CREATE_TABLE));
@@ -204,8 +211,8 @@ class TableFilesReader {
 		createTable.append(tbschema);
 		createTable.append(".");
 		createTable.append(tableName);
-		createTable.append("( key_ ").append(dataType).append(" not null ");
-		createTable.append(", value_ ").append(dataType).append(" ) ");
+		createTable.append("( key_ ").append(stringType).append(" not null ");
+		createTable.append(", value_ ").append(longStringType).append(" ) ");
 		try {
 			ps = connection.prepareStatement(createTable.toString());
 			ps.execute();
@@ -264,6 +271,9 @@ class TableFilesReader {
 			tbschema = properties.getProperty("tbschema");
 			driver = properties.getProperty("driver");
 			directory = new File("tables");
+
+			droptable = Boolean.parseBoolean(properties
+					.getProperty("droptable"));
 
 			configSQLResolver();
 
